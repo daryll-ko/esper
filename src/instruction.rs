@@ -1,6 +1,7 @@
 #[derive(Debug, PartialEq)]
 pub enum Opcode {
     HALT,
+    LOAD,
     ILLEGAL,
 }
 
@@ -8,6 +9,7 @@ impl From<u8> for Opcode {
     fn from(v: u8) -> Self {
         match v {
             0 => Opcode::HALT,
+            1 => Opcode::LOAD,
             _ => Opcode::ILLEGAL,
         }
     }
