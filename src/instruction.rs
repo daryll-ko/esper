@@ -4,6 +4,15 @@ pub enum Opcode {
     ILLEGAL,
 }
 
+impl From<u8> for Opcode {
+    fn from(v: u8) -> Self {
+        match v {
+            0 => Opcode::HALT,
+            _ => Opcode::ILLEGAL,
+        }
+    }
+}
+
 #[derive(Debug, PartialEq)]
 pub struct Instruction {
     opcode: Opcode,
