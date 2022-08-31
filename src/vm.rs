@@ -49,6 +49,24 @@ impl VM {
                 self.registers[register] = number;
                 false
             }
+            Opcode::ADD => {
+                let register1 = self.registers[self.next_8_bits() as usize];
+                let register2 = self.registers[self.next_8_bits() as usize];
+                self.registers[self.next_8_bits() as usize] = register1 + register2;
+                false
+            }
+            Opcode::SUBTRACT => {
+                let register1 = self.registers[self.next_8_bits() as usize];
+                let register2 = self.registers[self.next_8_bits() as usize];
+                self.registers[self.next_8_bits() as usize] = register1 - register2;
+                false
+            }
+            Opcode::MULTIPLY => {
+                let register1 = self.registers[self.next_8_bits() as usize];
+                let register2 = self.registers[self.next_8_bits() as usize];
+                self.registers[self.next_8_bits() as usize] = register1 * register2;
+                false
+            }
             Opcode::ILLEGAL => true,
         }
     }
@@ -87,6 +105,45 @@ mod tests {
         test_vm.program = vec![1, 0, 1, 58, 0];
         test_vm.run();
         assert_eq!(test_vm.registers[0], 314);
+    }
+
+    #[test]
+    fn test_opcode_add() {
+        let mut test_vm = VM::new();
+        test_vm.program = vec![1, 0, 20, 22, 1, 1, 12, 34, 2, 0, 1, 2];
+
+        // register 0: 5_142
+        //          1: 3_106
+        //          2: 5_142 + 3_106 = 8_248
+
+        test_vm.run();
+        assert_eq!(test_vm.registers[2], 8_248);
+    }
+
+    #[test]
+    fn test_opcode_subtract() {
+        let mut test_vm = VM::new();
+        test_vm.program = vec![1, 0, 20, 22, 1, 1, 12, 34, 3, 0, 1, 2];
+
+        // register 0: 5_142
+        //          1: 3_106
+        //          2: 5_142 - 3_106 = 2_036
+
+        test_vm.run();
+        assert_eq!(test_vm.registers[2], 2_036);
+    }
+
+    #[test]
+    fn test_opcode_multiply() {
+        let mut test_vm = VM::new();
+        test_vm.program = vec![1, 0, 20, 22, 1, 1, 12, 34, 4, 0, 1, 2];
+
+        // register 0: 5_142
+        //          1: 3_106
+        //          2: 5_142 * 3_106 = 15_971_052
+
+        test_vm.run();
+        assert_eq!(test_vm.registers[2], 15_971_052);
     }
 
     #[test]

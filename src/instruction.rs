@@ -2,6 +2,9 @@
 pub enum Opcode {
     HALT,
     LOAD,
+    ADD,
+    SUBTRACT,
+    MULTIPLY,
     ILLEGAL,
 }
 
@@ -10,6 +13,9 @@ impl From<u8> for Opcode {
         match v {
             0 => Opcode::HALT,
             1 => Opcode::LOAD,
+            2 => Opcode::ADD,
+            3 => Opcode::SUBTRACT,
+            4 => Opcode::MULTIPLY,
             _ => Opcode::ILLEGAL,
         }
     }
