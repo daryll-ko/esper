@@ -6,6 +6,7 @@ pub enum Opcode {
     SUBTRACT,
     MULTIPLY,
     DIVIDE,
+	JUMP,
     ILLEGAL,
 }
 
@@ -18,6 +19,7 @@ impl From<u8> for Opcode {
             3 => Opcode::SUBTRACT,
             4 => Opcode::MULTIPLY,
             5 => Opcode::DIVIDE,
+			6 => Opcode::JUMP,
             _ => Opcode::ILLEGAL,
         }
     }

@@ -76,6 +76,11 @@ impl VM {
                 self.remainder = (register1 % register2) as u32;
                 false
             }
+            Opcode::JUMP => {
+                let target = self.registers[self.next_8_bits() as usize];
+                self.program_counter = target as usize;
+                false
+            }
             Opcode::ILLEGAL => true,
         }
     }
@@ -168,6 +173,15 @@ mod tests {
         assert_eq!(test_vm.registers[2], 1);
         assert_eq!(test_vm.remainder, 2_036);
     }
+
+	#[test]
+	fn test_opcode_jump() {
+		let mut test_vm = VM::new();
+		test_vm.registers[0] = 1;
+		test_vm.program = vec![6, 0, 0, 0];
+		test_vm.run();
+		assert_eq!(test_vm.program_counter, 2);
+	}
 
     #[test]
     fn test_opcode_illegal() {
