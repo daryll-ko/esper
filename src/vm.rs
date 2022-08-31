@@ -81,6 +81,16 @@ impl VM {
                 self.program_counter = target as usize;
                 false
             }
+            Opcode::JUMPFORWARD => {
+                let jump = self.registers[self.next_8_bits() as usize];
+                self.program_counter += jump as usize;
+                false
+            }
+            Opcode::JUMPBACKWARD => {
+                let jump = self.registers[self.next_8_bits() as usize];
+                self.program_counter -= jump as usize;
+                false
+            }
             Opcode::ILLEGAL => true,
         }
     }
@@ -174,14 +184,36 @@ mod tests {
         assert_eq!(test_vm.remainder, 2_036);
     }
 
-	#[test]
-	fn test_opcode_jump() {
-		let mut test_vm = VM::new();
-		test_vm.registers[0] = 1;
-		test_vm.program = vec![6, 0, 0, 0];
-		test_vm.run();
-		assert_eq!(test_vm.program_counter, 2);
-	}
+    #[test]
+    fn test_opcode_jump() {
+        let mut test_vm = VM::new();
+        test_vm.registers[0] = 1;
+        test_vm.program = vec![6, 0, 0, 0];
+        test_vm.run();
+        assert_eq!(test_vm.program_counter, 2);
+    }
+
+    #[test]
+    fn test_opcode_jump_forward() {
+        let mut test_vm = VM::new();
+        test_vm.registers[0] = 2;
+        test_vm.program = vec![7, 0, 0, 0, 0, 0];
+        //                     ----  o-->-->  .
+        test_vm.run();
+        assert_eq!(test_vm.program_counter, 5);
+    }
+
+    #[test]
+    fn test_opcode_jump_backward() {
+        let mut test_vm = VM::new();
+        test_vm.program = vec![1, 3, 0, 1, 8, 3, 0, 3, 5, 0, 0];
+        //                     ----------  ----
+        //                                    <--o
+        //                                    ----------     .
+        test_vm.run();
+        assert_eq!(test_vm.program_counter, 10);
+        assert_eq!(test_vm.registers[5], -1);
+    }
 
     #[test]
     fn test_opcode_illegal() {
