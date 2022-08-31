@@ -4,6 +4,7 @@ pub struct VM {
     registers: [i32; 32],
     program_counter: usize,
     program: Vec<u8>,
+    remainder: u32,
 }
 
 impl VM {
@@ -12,6 +13,7 @@ impl VM {
             registers: [0; 32],
             program_counter: 0,
             program: vec![],
+            remainder: 0,
         }
     }
 
@@ -65,6 +67,13 @@ impl VM {
                 let register1 = self.registers[self.next_8_bits() as usize];
                 let register2 = self.registers[self.next_8_bits() as usize];
                 self.registers[self.next_8_bits() as usize] = register1 * register2;
+                false
+            }
+            Opcode::DIVIDE => {
+                let register1 = self.registers[self.next_8_bits() as usize];
+                let register2 = self.registers[self.next_8_bits() as usize];
+                self.registers[self.next_8_bits() as usize] = register1 / register2;
+                self.remainder = (register1 % register2) as u32;
                 false
             }
             Opcode::ILLEGAL => true,
@@ -144,6 +153,20 @@ mod tests {
 
         test_vm.run();
         assert_eq!(test_vm.registers[2], 15_971_052);
+    }
+
+    #[test]
+    fn test_opcode_divide() {
+        let mut test_vm = VM::new();
+        test_vm.program = vec![1, 0, 20, 22, 1, 1, 12, 34, 5, 0, 1, 2];
+
+        // register 0: 5_142
+        //          1: 3_106
+        //          2: 5_142 / 3_106 = 1 remainder 2_036
+
+        test_vm.run();
+        assert_eq!(test_vm.registers[2], 1);
+        assert_eq!(test_vm.remainder, 2_036);
     }
 
     #[test]
