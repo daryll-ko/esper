@@ -34,27 +34,29 @@ impl VM {
         result
     }
 
+    fn execute_instruction(&mut self) -> bool {
+        if self.program_counter >= self.program.len() {
+            return true;
+        }
+        match self.decode_opcode() {
+            Opcode::HALT => {
+                println!("HALT encountered!");
+                true
+            }
+            Opcode::LOAD => {
+                let register = self.next_8_bits() as usize;
+                let number = self.next_16_bits() as i32;
+                self.registers[register] = number;
+                false
+            }
+            Opcode::ILLEGAL => true,
+        }
+    }
+
     pub fn run(&mut self) {
-        loop {
-            if self.program_counter >= self.program.len() {
-                break;
-            }
-            match self.decode_opcode() {
-                Opcode::HALT => {
-                    println!("HALT encountered");
-                    return;
-                }
-                Opcode::LOAD => {
-                    let register = self.next_8_bits() as usize;
-                    let number = self.next_16_bits() as u16;
-                    self.registers[register] = number as i32;
-                    continue;
-                }
-                _ => {
-                    println!("Unrecognized opcode found. Terminating...");
-                    return;
-                }
-            }
+        let mut done = false;
+        while !done {
+            done = self.execute_instruction();
         }
     }
 }
@@ -74,14 +76,13 @@ mod tests {
     #[test]
     fn test_opcode_halt() {
         let mut test_vm = VM::new();
-        let test_bytes = vec![0, 0, 0, 0];
-        test_vm.program = test_bytes;
+        test_vm.program = vec![0, 0, 0, 0];
         test_vm.run();
         assert_eq!(test_vm.program_counter, 1);
     }
 
     #[test]
-    fn test_load_opcode() {
+    fn test_opcode_load() {
         let mut test_vm = VM::new();
         test_vm.program = vec![1, 0, 1, 58, 0];
         test_vm.run();
@@ -91,8 +92,7 @@ mod tests {
     #[test]
     fn test_opcode_illegal() {
         let mut test_vm = VM::new();
-        let test_bytes = vec![123, 0, 0, 0];
-        test_vm.program = test_bytes;
+        test_vm.program = vec![123, 0, 0, 0];
         test_vm.run();
         assert_eq!(test_vm.program_counter, 1);
     }
