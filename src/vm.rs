@@ -1,10 +1,16 @@
 pub struct VM {
     registers: [i32; 32],
+    program_counter: usize,
+    program: Vec<u8>,
 }
 
 impl VM {
     pub fn new() -> VM {
-        VM { registers: [0; 32] }
+        VM {
+            registers: [0; 32],
+            program_counter: 0,
+            program: vec![],
+        }
     }
 }
 
