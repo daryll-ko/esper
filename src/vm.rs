@@ -198,8 +198,10 @@ mod tests {
         let mut test_vm = VM::new();
         test_vm.registers[0] = 2;
         test_vm.program = vec![7, 0, 0, 0, 0, 0];
-        //                     ----  o-->-->  .
-        test_vm.run();
+        
+		//                     ----  o-->-->  .
+        
+		test_vm.run();
         assert_eq!(test_vm.program_counter, 5);
     }
 
@@ -207,10 +209,12 @@ mod tests {
     fn test_opcode_jump_backward() {
         let mut test_vm = VM::new();
         test_vm.program = vec![1, 3, 0, 1, 8, 3, 0, 3, 5, 0, 0];
-        //                     ----------  ----
+        
+		//                     ----------  ----
         //                                    <--o
         //                                    ----------     .
-        test_vm.run();
+        
+		test_vm.run();
         assert_eq!(test_vm.program_counter, 10);
         assert_eq!(test_vm.registers[5], -1);
     }
