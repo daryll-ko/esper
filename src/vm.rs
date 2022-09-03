@@ -232,6 +232,9 @@ mod tests {
         test_vm.program = vec![1, 0, 1, 0, 1, 3, 1, 0, 9, 0, 3];
         test_vm.run();
         assert_eq!(test_vm.equal_flag, true);
+		test_vm.program.extend([1, 3, 0, 1, 9, 0, 3]);
+		test_vm.run();
+        assert_eq!(test_vm.equal_flag, false);
     }
 
     #[test]
