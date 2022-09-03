@@ -123,6 +123,14 @@ impl VM {
                     <= self.registers[self.next_8_bits() as usize];
                 false
             }
+            Opcode::JUMPIF => {
+                let register = self.next_8_bits() as usize;
+                let target = self.registers[register];
+                if self.comparison_flag {
+                    self.program_counter = target as usize;
+                }
+                false
+            }
             Opcode::ILLEGAL => true,
         }
     }
@@ -327,6 +335,16 @@ mod tests {
         test_vm.program.extend([1, 22, 0, 12, 14, 20, 22]);
         test_vm.run();
         assert_eq!(test_vm.comparison_flag, false);
+    }
+
+    #[test]
+    fn test_opcode_jump_if() {
+        let mut test_vm = VM::new();
+        test_vm.registers[5] = 15;
+        test_vm.program = vec![1, 31, 0, 41, 1, 15, 0, 26, 10, 31, 15, 15, 5, 0, 0, 0];
+		//                     *--==--=====  *--==--=====  **--==--==  **--=        o->
+        test_vm.run();
+        assert_eq!(test_vm.program_counter, 16);
     }
 
     #[test]

@@ -15,6 +15,7 @@ pub enum Opcode {
     LESS,
     GREATEREQUAL,
     LESSEQUAL,
+    JUMPIF,
     ILLEGAL,
 }
 
@@ -36,6 +37,7 @@ impl From<u8> for Opcode {
             12 => Opcode::LESS,
             13 => Opcode::GREATEREQUAL,
             14 => Opcode::LESSEQUAL,
+            15 => Opcode::JUMPIF,
             _ => Opcode::ILLEGAL,
         }
     }
