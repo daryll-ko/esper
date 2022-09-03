@@ -1,9 +1,9 @@
 use crate::instruction::Opcode;
 
 pub struct VM {
-    registers: [i32; 32],
+    pub registers: [i32; 32],
     program_counter: usize,
-    program: Vec<u8>,
+    pub program: Vec<u8>,
     remainder: u32,
     comparison_flag: bool,
 }
@@ -133,6 +133,10 @@ impl VM {
             }
             Opcode::ILLEGAL => true,
         }
+    }
+
+    pub fn add_byte(&mut self, byte: u8) {
+        self.program.push(byte);
     }
 
     pub fn run(&mut self) {
@@ -342,7 +346,7 @@ mod tests {
         let mut test_vm = VM::new();
         test_vm.registers[5] = 15;
         test_vm.program = vec![1, 31, 0, 41, 1, 15, 0, 26, 10, 31, 15, 15, 5, 0, 0, 0];
-		//                     *--==--=====  *--==--=====  **--==--==  **--=        o->
+        //                     *--==--=====  *--==--=====  **--==--==  **--=        o->
         test_vm.run();
         assert_eq!(test_vm.program_counter, 16);
     }
