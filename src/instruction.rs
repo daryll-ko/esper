@@ -11,6 +11,10 @@ pub enum Opcode {
     JUMPBACKWARD,
     EQUAL,
     NOTEQUAL,
+    GREATER,
+    LESS,
+    GREATEREQUAL,
+    LESSEQUAL,
     ILLEGAL,
 }
 
@@ -28,6 +32,10 @@ impl From<u8> for Opcode {
             8 => Opcode::JUMPBACKWARD,
             9 => Opcode::EQUAL,
             10 => Opcode::NOTEQUAL,
+            11 => Opcode::GREATER,
+            12 => Opcode::LESS,
+            13 => Opcode::GREATEREQUAL,
+            14 => Opcode::LESSEQUAL,
             _ => Opcode::ILLEGAL,
         }
     }

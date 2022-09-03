@@ -5,7 +5,7 @@ pub struct VM {
     program_counter: usize,
     program: Vec<u8>,
     remainder: u32,
-	comparison_flag: bool,
+    comparison_flag: bool,
 }
 
 impl VM {
@@ -101,6 +101,26 @@ impl VM {
             Opcode::NOTEQUAL => {
                 self.comparison_flag = self.registers[self.next_8_bits() as usize]
                     != self.registers[self.next_8_bits() as usize];
+                false
+            }
+            Opcode::GREATER => {
+                self.comparison_flag = self.registers[self.next_8_bits() as usize]
+                    > self.registers[self.next_8_bits() as usize];
+                false
+            }
+            Opcode::LESS => {
+                self.comparison_flag = self.registers[self.next_8_bits() as usize]
+                    < self.registers[self.next_8_bits() as usize];
+                false
+            }
+            Opcode::GREATEREQUAL => {
+                self.comparison_flag = self.registers[self.next_8_bits() as usize]
+                    >= self.registers[self.next_8_bits() as usize];
+                false
+            }
+            Opcode::LESSEQUAL => {
+                self.comparison_flag = self.registers[self.next_8_bits() as usize]
+                    <= self.registers[self.next_8_bits() as usize];
                 false
             }
             Opcode::ILLEGAL => true,
@@ -251,6 +271,62 @@ mod tests {
         test_vm.program.extend([1, 3, 0, 1, 10, 0, 3]);
         test_vm.run();
         assert_eq!(test_vm.comparison_flag, true);
+    }
+
+    #[test]
+    fn test_opcode_greater() {
+        let mut test_vm = VM::new();
+        test_vm.program = vec![1, 20, 12, 34, 1, 22, 43, 21, 11, 20, 22];
+        test_vm.run();
+        assert_eq!(test_vm.comparison_flag, false);
+        test_vm.program.extend([1, 22, 12, 34, 11, 20, 22]);
+        test_vm.run();
+        assert_eq!(test_vm.comparison_flag, false);
+        test_vm.program.extend([1, 22, 0, 12, 11, 20, 22]);
+        test_vm.run();
+        assert_eq!(test_vm.comparison_flag, true);
+    }
+
+    #[test]
+    fn test_opcode_less() {
+        let mut test_vm = VM::new();
+        test_vm.program = vec![1, 20, 12, 34, 1, 22, 43, 21, 12, 20, 22];
+        test_vm.run();
+        assert_eq!(test_vm.comparison_flag, true);
+        test_vm.program.extend([1, 22, 12, 34, 12, 20, 22]);
+        test_vm.run();
+        assert_eq!(test_vm.comparison_flag, false);
+        test_vm.program.extend([1, 22, 0, 12, 12, 20, 22]);
+        test_vm.run();
+        assert_eq!(test_vm.comparison_flag, false);
+    }
+
+    #[test]
+    fn test_opcode_greater_equal() {
+        let mut test_vm = VM::new();
+        test_vm.program = vec![1, 20, 12, 34, 1, 22, 43, 21, 13, 20, 22];
+        test_vm.run();
+        assert_eq!(test_vm.comparison_flag, false);
+        test_vm.program.extend([1, 22, 12, 34, 13, 20, 22]);
+        test_vm.run();
+        assert_eq!(test_vm.comparison_flag, true);
+        test_vm.program.extend([1, 22, 0, 12, 13, 20, 22]);
+        test_vm.run();
+        assert_eq!(test_vm.comparison_flag, true);
+    }
+
+    #[test]
+    fn test_opcode_less_equal() {
+        let mut test_vm = VM::new();
+        test_vm.program = vec![1, 20, 12, 34, 1, 22, 43, 21, 14, 20, 22];
+        test_vm.run();
+        assert_eq!(test_vm.comparison_flag, true);
+        test_vm.program.extend([1, 22, 12, 34, 14, 20, 22]);
+        test_vm.run();
+        assert_eq!(test_vm.comparison_flag, true);
+        test_vm.program.extend([1, 22, 0, 12, 14, 20, 22]);
+        test_vm.run();
+        assert_eq!(test_vm.comparison_flag, false);
     }
 
     #[test]
