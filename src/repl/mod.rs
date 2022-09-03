@@ -26,7 +26,13 @@ impl REPL {
                 .read_line(&mut buffer)
                 .expect("Unable to read a line from the user!");
             let buffer = buffer.trim();
+            self.command_buffer.push(buffer.to_string());
             match buffer {
+                ".history" => {
+                    for command in &self.command_buffer {
+                        println!("{}", command);
+                    }
+                }
                 ".quit" => {
                     println!("Deactivating esper powers...");
                     std::process::exit(0);
