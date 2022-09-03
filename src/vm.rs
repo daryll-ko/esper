@@ -6,6 +6,7 @@ pub struct VM {
     program: Vec<u8>,
     remainder: u32,
     equal_flag: bool,
+    not_equal_flag: bool,
 }
 
 impl VM {
@@ -16,6 +17,7 @@ impl VM {
             program: vec![],
             remainder: 0,
             equal_flag: false,
+            not_equal_flag: false,
         }
     }
 
@@ -99,8 +101,8 @@ impl VM {
                 false
             }
             Opcode::NOTEQUAL => {
-                self.equal_flag = !(self.registers[self.next_8_bits() as usize]
-                    != self.registers[self.next_8_bits() as usize]);
+                self.not_equal_flag = self.registers[self.next_8_bits() as usize]
+                    != self.registers[self.next_8_bits() as usize];
                 false
             }
             Opcode::ILLEGAL => true,
@@ -247,10 +249,10 @@ mod tests {
         let mut test_vm = VM::new();
         test_vm.program = vec![1, 0, 1, 0, 1, 3, 1, 0, 10, 0, 3];
         test_vm.run();
-        assert_eq!(test_vm.equal_flag, true);
+        assert_eq!(test_vm.not_equal_flag, false);
         test_vm.program.extend([1, 3, 0, 1, 10, 0, 3]);
         test_vm.run();
-        assert_eq!(test_vm.equal_flag, false);
+        assert_eq!(test_vm.not_equal_flag, true);
     }
 
     #[test]
