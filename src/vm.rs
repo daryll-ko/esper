@@ -5,6 +5,7 @@ pub struct VM {
     program_counter: usize,
     program: Vec<u8>,
     remainder: u32,
+    equal_flag: bool,
 }
 
 impl VM {
@@ -14,6 +15,7 @@ impl VM {
             program_counter: 0,
             program: vec![],
             remainder: 0,
+            equal_flag: false,
         }
     }
 
@@ -89,6 +91,11 @@ impl VM {
             Opcode::JUMPBACKWARD => {
                 let jump = self.registers[self.next_8_bits() as usize];
                 self.program_counter -= jump as usize;
+                false
+            }
+            Opcode::EQUAL => {
+                self.equal_flag = self.registers[self.next_8_bits() as usize]
+                    == self.registers[self.next_8_bits() as usize];
                 false
             }
             Opcode::ILLEGAL => true,
@@ -198,10 +205,10 @@ mod tests {
         let mut test_vm = VM::new();
         test_vm.registers[0] = 2;
         test_vm.program = vec![7, 0, 0, 0, 0, 0];
-        
-		//                     ----  o-->-->  .
-        
-		test_vm.run();
+
+        //                     ----  o-->-->  .
+
+        test_vm.run();
         assert_eq!(test_vm.program_counter, 5);
     }
 
@@ -209,14 +216,22 @@ mod tests {
     fn test_opcode_jump_backward() {
         let mut test_vm = VM::new();
         test_vm.program = vec![1, 3, 0, 1, 8, 3, 0, 3, 5, 0, 0];
-        
-		//                     ----------  ----
+
+        //                     ----------  ----
         //                                    <--o
         //                                    ----------     .
-        
-		test_vm.run();
+
+        test_vm.run();
         assert_eq!(test_vm.program_counter, 10);
         assert_eq!(test_vm.registers[5], -1);
+    }
+
+    #[test]
+    fn test_opcode_equal() {
+        let mut test_vm = VM::new();
+        test_vm.program = vec![1, 0, 1, 0, 1, 3, 1, 0, 9, 0, 3];
+        test_vm.run();
+        assert_eq!(test_vm.equal_flag, true);
     }
 
     #[test]

@@ -9,6 +9,7 @@ pub enum Opcode {
     JUMP,
     JUMPFORWARD,
     JUMPBACKWARD,
+	EQUAL,
     ILLEGAL,
 }
 
@@ -24,6 +25,7 @@ impl From<u8> for Opcode {
             6 => Opcode::JUMP,
             7 => Opcode::JUMPFORWARD,
             8 => Opcode::JUMPBACKWARD,
+			9 => Opcode::EQUAL,
             _ => Opcode::ILLEGAL,
         }
     }
