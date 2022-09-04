@@ -16,7 +16,7 @@ fn register(input: &str) -> IResult<&str, Token> {
 
 #[cfg(test)]
 mod tests {
-    use super::register;
+    use super::*;
 
     #[test]
     fn test_parse_register() {
