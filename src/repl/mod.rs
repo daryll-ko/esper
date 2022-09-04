@@ -37,7 +37,7 @@ impl REPL {
         loop {
             let mut buffer = String::new();
             let stdin = io::stdin();
-            print!("> ");
+            print!("esper > ");
             io::stdout().flush().expect("Unable to flush stdout...");
             stdin
                 .read_line(&mut buffer)
