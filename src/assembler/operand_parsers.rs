@@ -25,9 +25,10 @@ mod tests {
 
     #[test]
     fn test_parse_integer_operand() {
-        let result = integer_operand("#2022");
+		let result = integer_operand("#2022");
         assert_eq!(result.is_ok(), true);
-        let (rest, token) = result.unwrap();
+        
+		let (rest, token) = result.unwrap();
         assert_eq!(rest, "");
         assert_eq!(token, Token::IntegerOperand { value: 2022 });
 

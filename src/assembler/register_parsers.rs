@@ -20,14 +20,16 @@ mod tests {
 
     #[test]
     fn test_parse_register() {
-        let result = register("$0");
-        println!("{:?}", result);
+		let result = register("$0");
         assert_eq!(result.is_ok(), true);
-        let result = register("   $5   ");
+        
+		let result = register("   $5   ");
         assert_eq!(result.is_ok(), true);
-        let result = register("A");
+        
+		let result = register("A");
         assert_eq!(result.is_ok(), false);
-        let result = register("$f");
+        
+		let result = register("$f");
         assert_eq!(result.is_ok(), false);
     }
 }

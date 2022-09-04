@@ -12,15 +12,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_opcode_load() {
-		// positive test
+    fn test_parse_opcode_load() {
 		let result = opcode_load("load");
         assert_eq!(result.is_ok(), true);
-        let (rest, token) = result.unwrap();
+        
+		let (rest, token) = result.unwrap();
         assert_eq!(token, Token::Op { code: Opcode::LOAD });
         assert_eq!(rest, "");
 		
-		// negative test
 		let result = opcode_load("store");
 		assert_eq!(result.is_err(), true);
     }
