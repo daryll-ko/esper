@@ -2,7 +2,7 @@ use super::Token;
 use crate::instruction::Opcode;
 use nom::{bytes::complete::tag, IResult};
 
-fn opcode_load(input: &str) -> IResult<&str, Token> {
+pub fn opcode_load(input: &str) -> IResult<&str, Token> {
     let (input, _) = tag("load")(input)?;
     Ok((input, Token::Op { code: Opcode::LOAD }))
 }

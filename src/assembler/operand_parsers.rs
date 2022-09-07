@@ -7,7 +7,7 @@ use nom::{
 
 use super::Token;
 
-fn integer_operand(input: &str) -> IResult<&str, Token> {
+pub fn integer_operand(input: &str) -> IResult<&str, Token> {
     let (input, _) = space0(input)?;
     let (input, (_, number)) = tuple((tag("#"), digit1))(input)?;
     let (input, _) = space0(input)?;

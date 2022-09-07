@@ -7,11 +7,11 @@ use nom::{
 
 use super::Token;
 
-fn register(input: &str) -> IResult<&str, Token> {
+pub fn register(input: &str) -> IResult<&str, Token> {
     let (input, _) = space0(input)?;
     let (input, (_, index)) = tuple((tag("$"), satisfy(|c| is_digit(c as u8))))(input)?;
     let (input, _) = space0(input)?;
-    Ok((input, Token::Register { index: index as u8 }))
+    Ok((input, Token::Register { index: index as u8 - '0' as u8 }))
 }
 
 #[cfg(test)]
