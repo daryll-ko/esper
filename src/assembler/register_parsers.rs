@@ -11,7 +11,12 @@ pub fn register(input: &str) -> IResult<&str, Token> {
     let (input, _) = space0(input)?;
     let (input, (_, index)) = tuple((tag("$"), satisfy(|c| is_digit(c as u8))))(input)?;
     let (input, _) = space0(input)?;
-    Ok((input, Token::Register { index: index as u8 - '0' as u8 }))
+    Ok((
+        input,
+        Token::Register {
+            index: index as u8 - '0' as u8,
+        },
+    ))
 }
 
 #[cfg(test)]
@@ -20,16 +25,16 @@ mod tests {
 
     #[test]
     fn test_parse_register() {
-		let result = register("$0");
-        assert_eq!(result.is_ok(), true);
-        
-		let result = register("   $5   ");
-        assert_eq!(result.is_ok(), true);
-        
-		let result = register("A");
+        let result = register("$0");
+        assert_eq!(result, Ok(("", Token::Register { index: 0 })));
+		
+        let result = register("   $5   ");
+        assert_eq!(result, Ok(("", Token::Register { index: 5 })));
+		
+        let result = register("A");
         assert_eq!(result.is_ok(), false);
-        
-		let result = register("$f");
+
+        let result = register("$f");
         assert_eq!(result.is_ok(), false);
     }
 }
