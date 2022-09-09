@@ -43,6 +43,30 @@ impl From<u8> for Opcode {
     }
 }
 
+impl From<&str> for Opcode {
+    fn from(v: &str) -> Self {
+        match v {
+            "halt" => Opcode::HALT,
+            "load" => Opcode::LOAD,
+            "add" => Opcode::ADD,
+            "subtract" => Opcode::SUBTRACT,
+            "multiply" => Opcode::MULTIPLY,
+            "divide" => Opcode::DIVIDE,
+            "jump" => Opcode::JUMP,
+            "jumpforward" => Opcode::JUMPFORWARD,
+            "jumpbackward" => Opcode::JUMPBACKWARD,
+            "equal" => Opcode::EQUAL,
+            "notequal" => Opcode::NOTEQUAL,
+            "greater" => Opcode::GREATER,
+            "less" => Opcode::LESS,
+            "greaterequal" => Opcode::GREATEREQUAL,
+            "lessequal" => Opcode::LESSEQUAL,
+            "jumpif" => Opcode::JUMPIF,
+            _ => Opcode::ILLEGAL,
+        }
+    }
+}
+
 #[derive(Debug, PartialEq)]
 pub struct Instruction {
     opcode: Opcode,

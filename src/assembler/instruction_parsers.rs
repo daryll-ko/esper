@@ -2,7 +2,7 @@ use nom::character::complete::space0;
 use nom::sequence::tuple;
 use nom::IResult;
 
-use super::opcode_parsers::opcode_load;
+use super::opcode_parsers::opcode;
 use super::operand_parsers::integer_operand;
 use super::register_parsers::register;
 use super::Token;
@@ -59,8 +59,7 @@ impl AssemblerInstruction {
 
 pub fn one_instruction(input: &str) -> IResult<&str, AssemblerInstruction> {
     let (input, _) = space0(input)?;
-    let (input, (opcode, operand1, operand2)) =
-        tuple((opcode_load, register, integer_operand))(input)?;
+    let (input, (opcode, operand1, operand2)) = tuple((opcode, register, integer_operand))(input)?;
     let (input, _) = space0(input)?;
     Ok((
         input,
