@@ -69,7 +69,7 @@ impl REPL {
                 }
                 _ => {
                     let parsed_program = program(buffer);
-                    if !parsed_program.is_ok() {
+                    if parsed_program.is_err() {
                         println!("Sorry, what is it you wanted to say?");
                         continue;
                     }
