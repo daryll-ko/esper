@@ -1,10 +1,19 @@
-use nom::{multi::many1, IResult};
-
 use super::instruction_parsers::*;
+use nom::{multi::many1, IResult};
 
 #[derive(Debug, PartialEq)]
 pub struct Program {
     instructions: Vec<AssemblerInstruction>,
+}
+
+impl Program {
+    pub fn to_bytes(&self) -> Vec<u8> {
+        let mut program = vec![];
+        for instruction in &self.instructions {
+            program.append(&mut instruction.to_bytes());
+        }
+        program
+    }
 }
 
 pub fn program(input: &str) -> IResult<&str, Program> {
@@ -42,5 +51,15 @@ mod tests {
                 }
             ))
         );
+    }
+
+    #[test]
+    fn test_program_to_bytes() {
+        let result = program("load $1 #2");
+        assert_eq!(result.is_ok(), true);
+        let (_, program) = result.unwrap();
+        let bytecode = program.to_bytes();
+        assert_eq!(bytecode.len(), 4);
+        println!("{:?}", bytecode);
     }
 }

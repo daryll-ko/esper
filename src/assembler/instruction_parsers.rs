@@ -15,6 +15,48 @@ pub struct AssemblerInstruction {
     pub operand3: Option<Token>,
 }
 
+impl AssemblerInstruction {
+    fn extract_operand(t: &Token, results: &mut Vec<u8>) {
+        match t {
+            Token::Register { index } => {
+                results.push(*index);
+            }
+            Token::IntegerOperand { value } => {
+                let converted = *value as u16;
+                let byte1 = converted as u8;
+                let byte2 = (converted >> 8) as u8;
+                results.push(byte2 as u8); // Big-endian
+                results.push(byte1 as u8);
+            }
+            _ => {
+                println!("Opcode found in operand field!");
+                std::process::exit(1);
+            }
+        }
+    }
+    pub fn to_bytes(&self) -> Vec<u8> {
+        let mut results = vec![];
+        match self.opcode {
+            Token::Op { code } => match code {
+                _ => {
+                    results.push(code as u8);
+                }
+            },
+            _ => {
+                println!("Non-opcode found at opcode field!");
+                std::process::exit(1);
+            }
+        }
+        for operand in vec![&self.operand1, &self.operand2, &self.operand3] {
+            match operand {
+                Some(t) => AssemblerInstruction::extract_operand(t, &mut results),
+                None => {}
+            }
+        }
+        results
+    }
+}
+
 pub fn one_instruction(input: &str) -> IResult<&str, AssemblerInstruction> {
     let (input, _) = space0(input)?;
     let (input, (opcode, operand1, operand2)) =
