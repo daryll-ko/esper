@@ -3,7 +3,6 @@ use crate::vm::VM;
 use std;
 use std::io;
 use std::io::Write;
-use std::num::ParseIntError;
 
 pub struct REPL {
     command_buffer: Vec<String>,
@@ -16,22 +15,6 @@ impl REPL {
             command_buffer: vec![],
             vm: VM::new(),
         }
-    }
-    fn parse_hex(&mut self, input: &str) -> Result<Vec<u8>, ParseIntError> {
-        let tokens = input.split(" ").collect::<Vec<&str>>();
-        let mut results: Vec<u8> = vec![];
-        for hex_string in tokens {
-            let byte = u8::from_str_radix(&hex_string, 16);
-            match byte {
-                Ok(result) => {
-                    results.push(result);
-                }
-                Err(e) => {
-                    return Err(e);
-                }
-            }
-        }
-        Ok(results)
     }
     pub fn run(&mut self) {
         println!("Activating esper powers...");
