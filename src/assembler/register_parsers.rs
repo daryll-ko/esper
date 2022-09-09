@@ -14,7 +14,7 @@ pub fn register(input: &str) -> IResult<&str, Token> {
     Ok((
         input,
         Token::Register {
-            index: index as u8 - '0' as u8,
+            index: index as u8 - b'0',
         },
     ))
 }
@@ -27,10 +27,10 @@ mod tests {
     fn test_parse_register() {
         let result = register("$0");
         assert_eq!(result, Ok(("", Token::Register { index: 0 })));
-		
+
         let result = register("   $5   ");
         assert_eq!(result, Ok(("", Token::Register { index: 5 })));
-		
+
         let result = register("A");
         assert_eq!(result.is_ok(), false);
 

@@ -147,6 +147,12 @@ impl VM {
     }
 }
 
+impl Default for VM {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

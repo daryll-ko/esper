@@ -65,3 +65,9 @@ impl REPL {
         }
     }
 }
+
+impl Default for REPL {
+    fn default() -> Self {
+        Self::new()
+    }
+}
