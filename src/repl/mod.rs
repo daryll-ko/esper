@@ -51,16 +51,14 @@ impl REPL {
                     std::process::exit(0);
                 }
                 _ => {
-                    let parsed_program = program(buffer);
-                    if parsed_program.is_err() {
-                        println!("Sorry, what is it you wanted to say?");
-                        continue;
-                    }
-                    let (_, result) = parsed_program.unwrap();
-                    let bytecode = result.to_bytes();
-                    for byte in bytecode {
-                        self.vm.add_byte(byte);
-                    }
+                    let program = match program(buffer) {
+                        Ok((_, program)) => program,
+                        Err(_) => {
+                            println!("Sorry, what is it you wanted to say?");
+                            continue;
+                        }
+                    };
+                    self.vm.program.append(&mut program.to_bytes());
                     self.vm.run();
                 }
             }
