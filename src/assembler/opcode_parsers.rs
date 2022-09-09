@@ -1,10 +1,10 @@
 use super::Token;
 use crate::instruction::Opcode;
-use nom::{bytes::complete::tag, character::complete::space0, IResult};
+use nom::{bytes::complete::tag_no_case, character::complete::space0, IResult};
 
 pub fn opcode_load(input: &str) -> IResult<&str, Token> {
     let (input, _) = space0(input)?;
-    let (input, _) = tag("load")(input)?;
+    let (input, _) = tag_no_case("load")(input)?;
     let (input, _) = space0(input)?;
     Ok((input, Token::Op { code: Opcode::LOAD }))
 }
