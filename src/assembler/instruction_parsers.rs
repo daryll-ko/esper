@@ -1,3 +1,4 @@
+use nom::character::complete::space0;
 use nom::sequence::tuple;
 use nom::IResult;
 
@@ -8,15 +9,17 @@ use super::Token;
 
 #[derive(Debug, PartialEq)]
 pub struct AssemblerInstruction {
-    opcode: Token,
-    operand1: Option<Token>,
-    operand2: Option<Token>,
-    operand3: Option<Token>,
+    pub opcode: Token,
+    pub operand1: Option<Token>,
+    pub operand2: Option<Token>,
+    pub operand3: Option<Token>,
 }
 
 pub fn one_instruction(input: &str) -> IResult<&str, AssemblerInstruction> {
+    let (input, _) = space0(input)?;
     let (input, (opcode, operand1, operand2)) =
         tuple((opcode_load, register, integer_operand))(input)?;
+    let (input, _) = space0(input)?;
     Ok((
         input,
         AssemblerInstruction {

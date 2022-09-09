@@ -1,9 +1,11 @@
 use super::Token;
 use crate::instruction::Opcode;
-use nom::{bytes::complete::tag, IResult};
+use nom::{bytes::complete::tag, character::complete::space0, IResult};
 
 pub fn opcode_load(input: &str) -> IResult<&str, Token> {
+    let (input, _) = space0(input)?;
     let (input, _) = tag("load")(input)?;
+    let (input, _) = space0(input)?;
     Ok((input, Token::Op { code: Opcode::LOAD }))
 }
 
@@ -13,13 +15,13 @@ mod tests {
 
     #[test]
     fn test_parse_opcode_load() {
-		let result = opcode_load("load");
+        let result = opcode_load("load");
         assert_eq!(result.is_ok(), true);
-		let (rest, token) = result.unwrap();
+        let (rest, token) = result.unwrap();
         assert_eq!(token, Token::Op { code: Opcode::LOAD });
         assert_eq!(rest, "");
-		
-		let result = opcode_load("store");
-		assert_eq!(result.is_err(), true);
+
+        let result = opcode_load("store");
+        assert_eq!(result.is_err(), true);
     }
 }
