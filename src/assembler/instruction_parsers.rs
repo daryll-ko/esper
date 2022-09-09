@@ -43,7 +43,7 @@ impl AssemblerInstruction {
                 }
             },
             _ => {
-                println!("Non-opcode found at opcode field!");
+                println!("Non-opcode found in opcode field!");
                 std::process::exit(1);
             }
         }
