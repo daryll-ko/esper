@@ -60,12 +60,16 @@ impl AssemblerInstruction {
 
 pub fn one_instruction(input: &str) -> IResult<&str, AssemblerInstruction> {
     let (input, _) = space0(input)?;
-    let (input, result) = alt((instruction_type_one, instruction_type_two))(input)?;
+    let (input, result) = alt((
+        instruction_type_one,
+        instruction_type_two,
+        instruction_type_three,
+    ))(input)?;
     let (input, _) = space0(input)?;
     Ok((input, result))
 }
 
-// <opcode> <register> <operand> (例えLOAD 12 34)
+// <opcode> <register> <operand> (例えLOAD $12 #34)
 fn instruction_type_one(input: &str) -> IResult<&str, AssemblerInstruction> {
     let (input, (opcode, operand1, operand2)) = tuple((opcode, register, integer_operand))(input)?;
     Ok((
@@ -89,6 +93,21 @@ fn instruction_type_two(input: &str) -> IResult<&str, AssemblerInstruction> {
             operand1: None,
             operand2: None,
             operand3: None,
+        },
+    ))
+}
+
+// <opcode> <register> <register> <register> (例えADD $12 $13 $14)
+fn instruction_type_three(input: &str) -> IResult<&str, AssemblerInstruction> {
+    let (input, (opcode, operand1, operand2, operand3)) =
+        tuple((opcode, register, register, register))(input)?;
+    Ok((
+        input,
+        AssemblerInstruction {
+            opcode,
+            operand1: Some(operand1),
+            operand2: Some(operand2),
+            operand3: Some(operand3),
         },
     ))
 }
@@ -127,6 +146,23 @@ mod tests {
                     operand1: None,
                     operand2: None,
                     operand3: None,
+                }
+            ))
+        )
+    }
+
+    #[test]
+    fn test_parse_type_three_instruction() {
+        let result = instruction_type_three("add $12 $13 $14");
+        assert_eq!(
+            result,
+            Ok((
+                "",
+                AssemblerInstruction {
+                    opcode: Token::Op { code: Opcode::ADD },
+                    operand1: Some(Token::Register { index: 12 }),
+                    operand2: Some(Token::Register { index: 13 }),
+                    operand3: Some(Token::Register { index: 14 }),
                 }
             ))
         )
