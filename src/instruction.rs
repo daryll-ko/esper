@@ -93,4 +93,14 @@ mod tests {
         let instruction = Instruction::new(Opcode::HALT);
         assert_eq!(instruction.opcode, Opcode::HALT);
     }
+
+    #[test]
+    fn test_string_to_opcode() {
+        let opcode = Opcode::from("halt");
+        assert_eq!(opcode, Opcode::HALT);
+        let opcode = Opcode::from("load");
+        assert_eq!(opcode, Opcode::LOAD);
+        let opcode = Opcode::from("store");
+        assert_eq!(opcode, Opcode::ILLEGAL);
+    }
 }
