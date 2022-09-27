@@ -1,3 +1,4 @@
+use nom::branch::alt;
 use nom::character::complete::space0;
 use nom::sequence::tuple;
 use nom::IResult;
@@ -57,11 +58,16 @@ impl AssemblerInstruction {
     }
 }
 
+pub fn one_instruction(input: &str) -> IResult<&str, AssemblerInstruction> {
+    let (input, _) = space0(input)?;
+    let (input, result) = alt((instruction_type_one, instruction_type_two))(input)?;
+    let (input, _) = space0(input)?;
+    Ok((input, result))
+}
+
 // <opcode> <register> <operand> (例えLOAD 12 34)
 fn instruction_type_one(input: &str) -> IResult<&str, AssemblerInstruction> {
-    let (input, _) = space0(input)?;
     let (input, (opcode, operand1, operand2)) = tuple((opcode, register, integer_operand))(input)?;
-    let (input, _) = space0(input)?;
     Ok((
         input,
         AssemblerInstruction {
@@ -75,9 +81,7 @@ fn instruction_type_one(input: &str) -> IResult<&str, AssemblerInstruction> {
 
 // <opcode> (例えHALT)
 fn instruction_type_two(input: &str) -> IResult<&str, AssemblerInstruction> {
-    let (input, _) = space0(input)?;
     let (input, opcode) = opcode(input)?;
-    let (input, _) = space0(input)?;
     Ok((
         input,
         AssemblerInstruction {
