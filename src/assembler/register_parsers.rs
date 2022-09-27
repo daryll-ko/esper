@@ -1,6 +1,6 @@
 use nom::{
     bytes::complete::tag,
-    character::{complete::satisfy, complete::space0, is_digit},
+    character::complete::{digit1, space0},
     sequence::tuple,
     IResult,
 };
@@ -9,12 +9,12 @@ use super::Token;
 
 pub fn register(input: &str) -> IResult<&str, Token> {
     let (input, _) = space0(input)?;
-    let (input, (_, index)) = tuple((tag("$"), satisfy(|c| is_digit(c as u8))))(input)?;
+    let (input, (_, index)) = tuple((tag("$"), digit1))(input)?;
     let (input, _) = space0(input)?;
     Ok((
         input,
         Token::Register {
-            index: index as u8 - b'0',
+            index: index.parse::<u8>().unwrap(),
         },
     ))
 }
