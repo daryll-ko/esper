@@ -57,7 +57,8 @@ impl AssemblerInstruction {
     }
 }
 
-pub fn one_instruction(input: &str) -> IResult<&str, AssemblerInstruction> {
+// <opcode> <register> <operand> (例えLOAD 12 34)
+fn instruction_type_one(input: &str) -> IResult<&str, AssemblerInstruction> {
     let (input, _) = space0(input)?;
     let (input, (opcode, operand1, operand2)) = tuple((opcode, register, integer_operand))(input)?;
     let (input, _) = space0(input)?;
@@ -72,14 +73,30 @@ pub fn one_instruction(input: &str) -> IResult<&str, AssemblerInstruction> {
     ))
 }
 
+// <opcode> (例えHALT)
+fn instruction_type_two(input: &str) -> IResult<&str, AssemblerInstruction> {
+    let (input, _) = space0(input)?;
+    let (input, opcode) = opcode(input)?;
+    let (input, _) = space0(input)?;
+    Ok((
+        input,
+        AssemblerInstruction {
+            opcode,
+            operand1: None,
+            operand2: None,
+            operand3: None,
+        },
+    ))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::instruction::Opcode;
 
     #[test]
-    fn test_parse_one_instruction() {
-        let result = one_instruction("load $1 #2");
+    fn test_parse_type_one_instruction() {
+        let result = instruction_type_one("load $1 #2");
         assert_eq!(
             result,
             Ok((
@@ -88,6 +105,23 @@ mod tests {
                     opcode: Token::Op { code: Opcode::LOAD },
                     operand1: Some(Token::Register { index: 1 }),
                     operand2: Some(Token::IntegerOperand { value: 2 }),
+                    operand3: None,
+                }
+            ))
+        )
+    }
+
+    #[test]
+    fn test_parse_type_two_instruction() {
+        let result = instruction_type_two("halt");
+        assert_eq!(
+            result,
+            Ok((
+                "",
+                AssemblerInstruction {
+                    opcode: Token::Op { code: Opcode::HALT },
+                    operand1: None,
+                    operand2: None,
                     operand3: None,
                 }
             ))
